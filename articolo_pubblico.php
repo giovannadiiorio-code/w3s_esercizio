@@ -1,16 +1,20 @@
 <?php
 session_start();
+
 include "conn.php";
 include "header.php";
 
-// Legge tutti gli articoli dal database
-$sql = "SELECT * FROM articoli ORDER BY id_articolo DESC";
+// Recupera solo gli articoli pubblici
+$sql = "SELECT * FROM articoli
+        WHERE privato = 0
+        ORDER BY id_articolo DESC";
+
 $risultato = $conn->query($sql);
 ?>
 
 <main>
 
-    <h1>Articoli</h1>
+    <h1>Articoli Pubblici</h1>
 
     <?php
     if ($risultato->num_rows > 0) {
@@ -26,17 +30,6 @@ $risultato = $conn->query($sql);
                 <?php echo nl2br($articolo["descrizione"]); ?>
             </p>
 
-            <p>
-                <strong>Visibilità:</strong>
-                <?php
-                if ($articolo["privato"] == 1) {
-                    echo "Privato";
-                } else {
-                    echo "Pubblico";
-                }
-                ?>
-            </p>
-
             <hr>
 
         </article>
@@ -46,7 +39,7 @@ $risultato = $conn->query($sql);
 
     } else {
 
-        echo "<p>Nessun articolo presente.</p>";
+        echo "<p>Nessun articolo pubblico disponibile.</p>";
 
     }
     ?>
