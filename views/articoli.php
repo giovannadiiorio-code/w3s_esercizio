@@ -1,5 +1,15 @@
 <?php
+
 session_start();
+
+if (!isset($_SESSION["user_id"])) {
+    header("Location: login.php");
+    exit();
+}
+
+require_once "conn.php";
+include "header.php";
+
 
 // Controlla se l'utente è loggato
 if (!isset($_SESSION["email"])) {

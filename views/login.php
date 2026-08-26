@@ -1,5 +1,14 @@
 <?php
 
+require_once '../controllers/conn.php';
+session_start();
+//se l'utente è autenticato, viene rediretto alla pagina di dashboard
+if (isset($_SESSION['user_id'])) {
+    header('Location: dashboard.php');
+    exit();
+}
+
+$title = 'Login';
 include 'header.php';
 
 ?>
@@ -8,7 +17,8 @@ include 'header.php';
 
     <h1>LOGIN</h1>
 
-    <form method="POST" action="handle_login.php">
+    <form method="POST" action="controllers/handle_login.php">
+
 
         <label>Email</label>
         <br>
@@ -42,7 +52,7 @@ include 'header.php';
 
     <p>Non sei registrato?</p>
 
-    <a href="registrazione.php">
+    <a href="register.php">
         <button>
             Registrati ora
         </button>

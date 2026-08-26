@@ -1,6 +1,20 @@
 <?php
 session_start();
 
+public function authenticate() {
+    if (!isset($_SESSION["user_id"])) {
+        header("Location: login.php");
+        exit();
+    }
+}
+
+public funtion register() {
+    if (!isset($_SESSION["user_id"])) {
+        header("Location: login.php");
+        exit();
+    }
+}
+
 // Se l'utente NON è loggato lo rimanda al login
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");

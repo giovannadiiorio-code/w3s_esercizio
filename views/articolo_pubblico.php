@@ -2,7 +2,7 @@
 session_start();
 
 include "conn.php";
-include "header.php";
+include "views/header.php";
 
 // Recupera solo gli articoli pubblici
 $sql = "SELECT * FROM articoli
@@ -47,5 +47,5 @@ $risultato = $conn->query($sql);
 </main>
 
 <?php
-include "footer.php";
+include "views/footer.php";
 ?>

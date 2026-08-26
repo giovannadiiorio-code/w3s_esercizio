@@ -7,7 +7,7 @@ if (!isset($_SESSION["email"])) {
     exit();
 }
 
-include "conn.php";
+require_once "conn.php";
 
 // Recupera i dati del form
 $titolo = $_POST["titolo"];

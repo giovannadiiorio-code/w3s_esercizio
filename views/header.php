@@ -1,3 +1,6 @@
+<?php
+require_once  $_SERVER['DOCUMENT_ROOT'] . '/controllers/conn.php';
+?>
 <!DOCTYPE html>
 <html lang="it">
 
@@ -234,7 +237,7 @@ Home
 
 <li class="nav-item">
 
-<a class="nav-link" href="articolo_pubblico.php">
+<a class="nav-link" href="views/articolo_pubblico.php">
 
 Articoli Pubblici
 
@@ -244,9 +247,11 @@ Articoli Pubblici
 
 
 
+<?php if(isset($_SESSION["user_id"])) :  ?>
+
 <li class="nav-item">
 
-<a class="nav-link" href="articolo.php">
+<a class="nav-link" href="views/articolo.php">
 
 Articoli
 
@@ -258,13 +263,15 @@ Articoli
 
 <li class="nav-item">
 
-<a class="nav-link" href="articoli.php">
+<a class="nav-link" href="views/articoli.php">
 
 Nuovo Articolo
 
 </a>
 
 </li>
+
+<?php endif; ?>
 
 
 
@@ -277,8 +284,17 @@ Nuovo Articolo
 <div class="d-flex gap-2">
 
 
+<?php if(isset($_SESSION["user_id"])) :  ?>
 
-<a href="login.php" class="btn btn-login">
+<a href="logout.php" class="btn btn-login">
+
+Logout
+
+</a>
+
+<?php else: ?>
+
+<a href="views/login.php" class="btn btn-login">
 
 Login
 
@@ -292,6 +308,7 @@ Registrati
 
 </a>
 
+<?php endif; ?>
 
 
 </div>

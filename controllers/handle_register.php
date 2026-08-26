@@ -1,10 +1,10 @@
 <?php
-session_start();
+sessgit statusion_start();//va bene qua?
 
-include 'conn.php';
+include 'conn.php'; //richiama il file di connessione al database
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
+if ($_SERVER["REQUEST_METHOD"] == "POST") { //controlla che il form sia stato inviato tramite POST
+//$ e_ sono variabili globali, e che possono essere utilizzate in tutto il nostro codice, è disponibile sempre
     $nome = $_POST["nome"];
     $cognome = $_POST["cognome"];
     $email = $_POST["email"];
@@ -19,6 +19,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result->num_rows > 0) {
         die("Email già registrata.");
     }
+
+    //qua devi mettere anche l'HASH della password, ma tu ti dimentichi sempre quindi lasciamole in chiaro
+
 
     // Inserisce il nuovo utente
     $stmt = $conn->prepare("INSERT INTO utenti (nome, cognome, email, password) VALUES (?, ?, ?, ?)");

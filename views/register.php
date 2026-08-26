@@ -1,9 +1,9 @@
-//mettiamo il form con method post con for action
-creami la pagina di from di registrazione della mia pagina e poi il codice per "handle_register"
+
 <?<?php
-
+//mettiamo il form con method post con for action
+//creami la pagina di from di registrazione della mia pagina e poi il codice per "handle_register"
+require_once  $_SERVER['DOCUMENT_ROOT'] . '/controllers/conn.php';
 include 'header.php';
-
 ?>
 
 <main>
@@ -60,7 +60,8 @@ include 'header.php';
         <br><br>
 
 
-        <button type="submit">
+        <button type="submit"> 
+        
             Registrati
         </button>
 
