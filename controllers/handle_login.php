@@ -28,6 +28,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result->num_rows == 1) {
 
         $utente = $result->fetch_assoc();
+e
+        $result= User::authenticate ($mail; $password):
 
         // Controlla la password
         if (password_verify($password, $utente['password'])) {

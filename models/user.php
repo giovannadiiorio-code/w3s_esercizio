@@ -48,5 +48,21 @@ class User {
 
     }
 
+        //adesso crei il metodo verifica se è gia registrato
+    public function checkRegister ($email) //ci va public??
+    $sql = "SELECT id_utente FROM utenti WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+       // die("Email già registrata.") è brutto
+       //se true
+
+        return true 
+    else 
+        //la mail nonn c'è
+        return false
+    }
 
 }

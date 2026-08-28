@@ -1,31 +1,64 @@
+```php
 <?php
-sessgit statusion_start();//va bene qua?
 
-include 'conn.php'; //richiama il file di connessione al database
+require_once __DIR__ . '/conn.php';
+require_once __DIR__ . '/../models/user.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") { //controlla che il form sia stato inviato tramite POST
-//$ e_ sono variabili globali, e che possono essere utilizzate in tutto il nostro codice, è disponibile sempre
-    $nome = $_POST["nome"];
-    $cognome = $_POST["cognome"];
-    $email = $_POST["email"];
-    $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
+session_start();
 
-    // Controlla se l'email è già registrata
-    $check = $conn->prepare("SELECT * FROM utenti WHERE email = ?");
-    $check->bind_param("s", $email);
-    $check->execute();
-    $result = $check->get_result();
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    if ($result->num_rows > 0) {
-        die("Email già registrata.");
+    // Recupera i dati dal form
+    $nome = trim($_POST["nome"] ?? "");
+    $cognome = trim($_POST["cognome"] ?? "");
+    $email = trim($_POST["email"] ?? "");
+    $password = $_POST["password"] ?? "";
+    $password_confirm = $_POST["password_confirm"] ?? "";
+
+    // Controlla che tutti i campi siano compilati
+    if (empty($nome) || empty($cognome) || empty($email) || empty($password) || empty($password_confirm)) {
+
+        $_SESSION['campi_obbligatori'] = "Tutti i campi sono obbligatori";
+
+        header("Location: /views/register.php");
+        exit();
     }
 
-    //qua devi mettere anche l'HASH della password, ma tu ti dimentichi sempre quindi lasciamole in chiaro
+    // Controlla che le password coincidano
+    if ($password !== $password_confirm) {
 
+        $_SESSION['errore_password'] = "Le password non coincidono";
+
+        header("Location: /views/register.php");
+        exit();
+    }
+
+    // Controlla se l'email è già registrata
+    $result = user::checkRegister($email);
+
+    if ($result) {
+
+        $_SESSION['error_registrazione'] = "L'email è già registrata";
+
+        header("Location: /views/register.php");
+        exit();
+    }
+
+    // Crea l'hash della password
+    $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
     // Inserisce il nuovo utente
-    $stmt = $conn->prepare("INSERT INTO utenti (nome, cognome, email, password) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("ssss", $nome, $cognome, $email, $password);
+    $stmt = $conn->prepare(
+        "INSERT INTO utenti (nome, cognome, email, password) VALUES (?, ?, ?, ?)"
+    );
+
+    $stmt->bind_param(
+        "ssss",
+        $nome,
+        $cognome,
+        $email,
+        $password_hash
+    );
 
     if ($stmt->execute()) {
 
@@ -35,17 +68,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") { //controlla che il form sia stato in
         $_SESSION["email"] = $email;
 
         // Reindirizza alla dashboard
-        header("Location: dashboard.php");
+        header("Location: /views/dashboard.php");
         exit();
 
     } else {
 
-        echo "Errore durante la registrazione: " . $stmt->error;
+        $_SESSION['errore_registrazione'] = "Errore durante la registrazione";
 
+        header("Location: /views/register.php");
+        exit();
     }
 
     $stmt->close();
-    $check->close();
     $conn->close();
 }
+
 ?>
+```

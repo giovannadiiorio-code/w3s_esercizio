@@ -1,9 +1,10 @@
 
-<?<?php
+<?php
 //mettiamo il form con method post con for action
 //creami la pagina di from di registrazione della mia pagina e poi il codice per "handle_register"
 require_once  $_SERVER['DOCUMENT_ROOT'] . '/controllers/conn.php';
 include 'header.php';
+session_start()
 ?>
 
 <main>
@@ -55,6 +56,17 @@ include 'header.php';
         type="password" 
         name="password"
         placeholder="Inserisci password"
+        required>
+
+        <br><br>
+        
+        <label>ConfermaPassword</label>
+        <br>
+
+        <input 
+        type="confermapassword" 
+        name="confermapassword"
+        placeholder="conferma password"
         required>
 
         <br><br>
