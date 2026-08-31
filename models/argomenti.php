@@ -42,4 +42,58 @@ class Argomenti { //qua si istanzia la classe
         $stmt->execute();
         return $stmt->get_result()->fetch_assoc();  //restituisce un array associativo
     }
+
+    public static function create() { 
+        global $conn; 
+        $sql = "INSERT INTO argomenti (id_argomento, nome, link) 
+        VALUES (?, ?, ?)"; 
+        $stmt = $conn->prepare($sql); 
+        $stmt->bind_param( 
+            "iss", 
+            $this->id_argomento, 
+            $this->nome, 
+            $this->link ); 
+            $stmt->execute(); 
+        return $stmt->affected_rows > 0; 
+    }
+
+    public static function update() { 
+        global $conn; 
+        $sql = "UPDATE argomenti SET nome = ?, link = ? WHERE id_argomento = ?"; 
+        $stmt = $conn->prepare($sql); 
+        $stmt->bind_param( 
+            "ssi", 
+            $this->nome, 
+            $this->link, 
+            $this->id_argomento ); 
+        $stmt->execute(); 
+        return $stmt->affected_rows > 0; 
+    }
+
+    public static function delete() { 
+        global $conn; $sql = "DELETE FROM argomenti WHERE id_argomento = ?"; 
+        $stmt = $conn->prepare($sql); 
+        $stmt->bind_param( 
+            "i", $this->id_argomento ); 
+    $stmt->execute(); 
+    return $stmt->affected_rows > 0; 
+    }
+
+    public static function getAll() { 
+        global $conn; $sql = "SELECT * FROM argomenti"; 
+        $stmt = $conn->prepare($sql); 
+        $stmt->execute(); 
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC); 
+    }
+
+    public static function getById($id_argomento) { 
+        global $conn; $sql = "SELECT * FROM argomenti WHERE id_argomento = ?"; 
+        $stmt = $conn->prepare($sql); 
+        stmt->bind_param( 
+            "i", $id_argomento ); 
+    $stmt->execute(); 
+    return $stmt->get_result()->fetch_assoc(); }
+
 }
+
+//get all, get by id e Create

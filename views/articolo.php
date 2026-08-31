@@ -1,58 +1,104 @@
 <?php
+
+require_once "conn.php";
 session_start();
-include "conn.php";
+
+// Controllo della sessione
+if (!isset($_SESSION["user_id"])) {
+    header("Location: login.php");
+    exit();
+}
+
+// Controllo dell'ID
+if (!isset($_GET["id"]) || empty($_GET["id"])) {
+    die("Articolo non trovato.");
+}
+
+$id = intval($_GET["id"]);
+
+$title = "Visualizza Articolo";
+
 include "header.php";
 
-// Legge tutti gli articoli dal database
-$sql = "SELECT * FROM articoli ORDER BY id_articolo DESC";
-$risultato = $conn->query($sql);
+// Recupera l'articolo con il relativo argomento
+$sql = "SELECT
+            a.id_articolo,
+            a.titolo,
+            a.corpo,
+            ar.nome AS argomento
+        FROM articoli a
+        INNER JOIN argomenti ar
+            ON a.id_argomento = ar.id_argomento
+        WHERE a.id_articolo = ?";
+
+$stmt = $conn->prepare($sql);
+
+$stmt->bind_param("i", $id);
+
+$stmt->execute();
+
+$result = $stmt->get_result();
+
+if ($result->num_rows == 0) {
+
+    echo "<div class='container mt-5'>";
+    echo "<div class='alert alert-danger'>";
+    echo "Articolo non trovato.";
+    echo "</div>";
+    echo "</div>";
+
+    include "footer.php";
+    exit();
+}
+
+$articolo = $result->fetch_assoc();
+
 ?>
 
-<main>
+<div class="container mt-5">
 
-    <h1>Articoli</h1>
+    <div class="card shadow">
 
-    <?php
-    if ($risultato->num_rows > 0) {
+        <div class="card-header bg-primary text-white">
 
-        while ($articolo = $risultato->fetch_assoc()) {
-    ?>
+            <h2>
+                <?php echo htmlspecialchars($articolo["titolo"]); ?>
+            </h2>
 
-        <article>
+        </div>
 
-            <h2><?php echo $articolo["titolo"]; ?></h2>
-
-            <p>
-                <?php echo nl2br($articolo["descrizione"]); ?>
-            </p>
+        <div class="card-body">
 
             <p>
-                <strong>Visibilità:</strong>
-                <?php
-                if ($articolo["privato"] == 1) {
-                    echo "Privato";
-                } else {
-                    echo "Pubblico";
-                }
-                ?>
+                <strong>Argomento:</strong>
+                <?php echo htmlspecialchars($articolo["argomento"]); ?>
             </p>
 
             <hr>
 
-        </article>
+            <p style="text-align: justify; white-space: pre-line;">
+                <?php echo htmlspecialchars($articolo["corpo"]); ?>
+            </p>
 
-    <?php
-        }
+        </div>
 
-    } else {
+        <div class="card-footer">
 
-        echo "<p>Nessun articolo presente.</p>";
+            <a href="articoli.php" class="btn btn-secondary">
+                Torna agli articoli
+            </a>
 
-    }
-    ?>
+        </div>
 
-</main>
+    </div>
+
+</div>
 
 <?php
+
+$stmt->close();
+$conn->close();
+
 include "footer.php";
+
 ?>

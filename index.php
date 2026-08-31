@@ -3,13 +3,9 @@
 // COSA DEVI FARE: accentrare in maniera CMV.
 
 require_once  $_SERVER['DOCUMENT_ROOT'] . '/controllers/conn.php';
-
-session_start();
-
-
+include "views/header.php";
 $loggato = isset($_SESSION['utente']);
 
-include "views/header.php";
 
 // Recupera solo gli articoli pubblici
 $sql = "SELECT * FROM articoli 

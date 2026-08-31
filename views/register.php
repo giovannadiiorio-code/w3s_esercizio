@@ -1,94 +1,152 @@
 
 <?php
-//mettiamo il form con method post con for action
-//creami la pagina di from di registrazione della mia pagina e poi il codice per "handle_register"
-require_once  $_SERVER['DOCUMENT_ROOT'] . '/controllers/conn.php';
-include 'header.php';
-session_start()
+$title = "Registrazione";
+include "header.php";
+session_start();
 ?>
 
-<main>
+<div class="container mt-5">
 
-    <h1>REGISTRAZIONE</h1>
+    <div class="row justify-content-center">
 
-    <form method="POST" action="handle_register.php">
+        <div class="col-md-6">
 
-        <label>Nome</label>
-        <br>
+            <div class="card shadow">
+            <?php
+            if (isset($_SESSION["error_registrazione"])) {
+                echo '<div class="alert alert-danger">' . $_SESSION["error_registrazione"] . '</div>';
+                unset($_SESSION["error_registrazione"]);
+            }
 
-        <input 
-        type="text" 
-        name="nome"
-        placeholder="Inserisci nome"
-        required>
+            if(isset($_SESSION["registrazione_corretta"])){
+                echo '<div class="alert alert-success">' . $_SESSION["registrazione_corretta"] . '</div>';
+                unset($_SESSION["registrazione_corretta"]);
+            }
 
-        <br><br>
+            ?>
+           
+<style>
+    .card-rosa {
+        border: 2px solid #e83e8c;
+    }
 
+    .bg-rosa {
+        background-color: #e83e8c !important;
+    }
 
-        <label>Cognome</label>
-        <br>
+    .btn-rosa {
+        background-color: #e83e8c;
+        border-color: #e83e8c;
+        color: white;
+    }
 
-        <input 
-        type="text" 
-        name="cognome"
-        placeholder="Inserisci cognome"
-        required>
+    .btn-rosa:hover {
+        background-color: #d63384;
+        border-color: #d63384;
+        color: white;
+    }
 
-        <br><br>
+    .card-rosa .form-control:focus {
+        border-color: #e83e8c;
+        box-shadow: 0 0 0 0.2rem rgba(232, 62, 140, 0.25);
+    }
 
-
-        <label>Email</label>
-        <br>
-
-        <input 
-        type="email" 
-        name="email"
-        placeholder="Inserisci email"
-        required>
-
-        <br><br>
-
-
-        <label>Password</label>
-        <br>
-
-        <input 
-        type="password" 
-        name="password"
-        placeholder="Inserisci password"
-        required>
-
-        <br><br>
-        
-        <label>ConfermaPassword</label>
-        <br>
-
-        <input 
-        type="confermapassword" 
-        name="confermapassword"
-        placeholder="conferma password"
-        required>
-
-        <br><br>
+    .card-rosa a {
+        color: #e83e8c;
+    }
+</style>
 
 
-        <button type="submit"> 
-        
-            Registrati
-        </button>
+<div class="card card-rosa shadow">
 
-    </form>
+    <div class="card-header bg-rosa text-white">
+        <h3 class="text-center">Registrazione</h3>
+    </div>
 
+    <div class="card-body">
 
-    <br>
+        <form action="/controllers/handle_register.php" method="POST">
 
-    <p>Hai già un account?</p>
+            <div class="mb-3">
+                <label for="nome" class="form-label">Nome</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="nome"
+                    name="nome">
+            </div>
 
-    <a href="login.php">
-        <button>
-            Accedi
-        </button>
-    </a>
+            <div class="mb-3">
+                <label for="cognome" class="form-label">Cognome</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="cognome"
+                    name="cognome"
+                    required>
+            </div>
 
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    name="email"
+                    required>
+            </div>
 
-</main>
+            <div class="mb-3">
+                <label for="telefono" class="form-label">Telefono</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="telefono"
+                    name="telefono"
+                    required>
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input
+                    type="password"
+                    class="form-control"
+                    id="password"
+                    name="password"
+                    required>
+            </div>
+
+            <div class="mb-3">
+                <label for="conferma_password" class="form-label">
+                    Conferma Password
+                </label>
+
+                <input
+                    type="password"
+                    class="form-control"
+                    id="conferma_password"
+                    name="conferma_password"
+                    required>
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-rosa w-100">
+                    Registrati
+                </button>
+            </div>
+
+        </form>
+
+        <hr>
+
+        <p class="text-center">
+            Hai già un account?
+            <a href="login.php">Accedi</a>
+        </p>
+
+    </div>
+</div>
+
+<?php
+include "footer.php";
+?>

@@ -1,87 +1,64 @@
-```php
 <?php
+require_once $_SERVER['DOCUMENT_ROOT'] . "/controllers/conn.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/models/user.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/models/config.php";
 
-require_once __DIR__ . '/conn.php';
-require_once __DIR__ . '/../models/user.php';
+
+// Controlla che il form sia stato inviato tramite POST
+if ($_SERVER["REQUEST_METHOD"] != "POST") {
+    header("Location: register.php");
+    exit();
+}
 
 session_start();
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+// Recupera i dati del form
+$nome = trim($_POST["nome"]);
+$cognome = trim($_POST["cognome"]);
+$email = trim($_POST["email"]);
+$telefono = trim($_POST["telefono"]);
+$password = $_POST["password"];
+$conferma_password = $_POST["conferma_password"];
 
-    // Recupera i dati dal form
-    $nome = trim($_POST["nome"] ?? "");
-    $cognome = trim($_POST["cognome"] ?? "");
-    $email = trim($_POST["email"] ?? "");
-    $password = $_POST["password"] ?? "";
-    $password_confirm = $_POST["password_confirm"] ?? "";
-
-    // Controlla che tutti i campi siano compilati
-    if (empty($nome) || empty($cognome) || empty($email) || empty($password) || empty($password_confirm)) {
-
-        $_SESSION['campi_obbligatori'] = "Tutti i campi sono obbligatori";
-
+// Controllo campi vuoti
+if (empty($nome)||empty($cognome)||empty($email)|| empty($telefono)|| empty($password) ||empty($conferma_password))
+    { 
+        echo "entro nell'if dei campi vuoti";
+        exit();
+        // da sostituire con un messaggio chiaro per l'utente in pagina html
+        $_SESSION['error_registrazione'] = "Tutti i campi sono obbligatori.";
         header("Location: /views/register.php");
         exit();
-    }
-
-    // Controlla che le password coincidano
-    if ($password !== $password_confirm) {
-
-        $_SESSION['errore_password'] = "Le password non coincidono";
-
-        header("Location: /views/register.php");
-        exit();
-    }
-
-    // Controlla se l'email è già registrata
-    $result = user::checkRegister($email);
-
-    if ($result) {
-
-        $_SESSION['error_registrazione'] = "L'email è già registrata";
-
-        header("Location: /views/register.php");
-        exit();
-    }
-
-    // Crea l'hash della password
-    $password_hash = password_hash($password, PASSWORD_DEFAULT);
-
-    // Inserisce il nuovo utente
-    $stmt = $conn->prepare(
-        "INSERT INTO utenti (nome, cognome, email, password) VALUES (?, ?, ?, ?)"
-    );
-
-    $stmt->bind_param(
-        "ssss",
-        $nome,
-        $cognome,
-        $email,
-        $password_hash
-    );
-
-    if ($stmt->execute()) {
-
-        // Salva i dati nella sessione
-        $_SESSION["id"] = $conn->insert_id;
-        $_SESSION["nome"] = $nome;
-        $_SESSION["email"] = $email;
-
-        // Reindirizza alla dashboard
-        header("Location: /views/dashboard.php");
-        exit();
-
-    } else {
-
-        $_SESSION['errore_registrazione'] = "Errore durante la registrazione";
-
-        header("Location: /views/register.php");
-        exit();
-    }
-
-    $stmt->close();
-    $conn->close();
+}
+// Controllo password
+if ($password !== $conferma_password) {
+    Config::createAllert("error_registrazione", "Tutti i campi sono obbligatori.", "/views/register.php");
 }
 
-?>
-```
+// Crea l'hash della password
+$password_hash = password_hash($password, PASSWORD_DEFAULT);
+
+$user = new User($nome, $cognome, $email, $telefono, $password_hash);
+//prendere il risultato della funzione e mostrare l'errore
+//utilizziamo il metodo checkRegister della classe User
+$result = $user->checkRegister();
+//se esiste uso la classe config per generare l'errore e il redirect
+$allert = new Config ("error_registrazione", "l'email è già registrata", "/views/register.php");
+if($result){
+    $allert->createAllert("error_registrazione", "l'email è già registrata", "/views/register.php");
+}
+
+// Inserimento utente
+$result = $user->register();
+if ($result) {
+    //messaggio di successo
+    $_SESSION["registrazione_corretta"] = "Registrazione effettuata con successo.";
+    header("Location: /views/login.php");
+    exit();
+} else {
+    session_start();
+    //messaggio di errore
+    $_SESSION["register_error"] = "Errore durante la registrazione.";
+    header("Location: /views/register.php");
+    exit();
+}

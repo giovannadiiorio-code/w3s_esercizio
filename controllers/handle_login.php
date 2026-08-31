@@ -1,59 +1,63 @@
 <?php
+require_once $_SERVER['DOCUMENT_ROOT'] . "/controllers/conn.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/models/user.php";
 
-require_once 'conn.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+// Controlla che il form sia stato inviato tramite POST
 
-    // Controlla che i campi siano compilati
-    if (empty($email) || empty($password)) {
-        echo "Compila tutti i campi";
-        exit();
-    }
+if ($_SERVER["REQUEST_METHOD"] != "POST") {
 
-    // Cerca l'utente nel database
-    $sql = "SELECT * FROM utenti WHERE email = ?";
+    header("Location: /views/login.php");
 
-    $stmt = $conn->prepare($sql);
+    exit();
 
-    $stmt->bind_param("s", $email);
-
-    $stmt->execute();
-
-    $result = $stmt->get_result();
-
-    // Controlla se l'email esiste
-    if ($result->num_rows == 1) {
-
-        $utente = $result->fetch_assoc();
-e
-        $result= User::authenticate ($mail; $password):
-
-        // Controlla la password
-        if (password_verify($password, $utente['password'])) {
- //la password è criptata nel database, quindi la devo decriptare per poterla confrontare con quella inserita dall'utente
-            session_start();
-
-            // Salva i dati dell'utente nella sessione
-            $_SESSION["user_id"] = $utente["id_utente"];
-            $_SESSION["nome"] = $utente["nome"];
-            $_SESSION["cognome"] = $utente["cognome"];
-            $_SESSION["email"] = $utente["email"];
-
-            echo "Login riuscito";
-            exit();
-
-        } else {
-
-            echo "Password errata";
-        }
-
-    } else {
-
-        echo "Email non trovata";
-    }
 }
 
-?>
+
+
+// Recupera i dati
+
+$email = trim($_POST["email"]);
+
+$password = $_POST["password"];
+
+
+
+// Controllo campi vuoti
+
+if (empty($email) || empty($password)) {
+
+    die("Compila tutti i campi.");
+
+}
+
+
+
+$result = User::authenticate($email, $password);
+
+
+
+if ($result) {//qua l'utente non è più un guest, qua stai generando la session
+
+    session_start();
+
+    $_SESSION["user_id"] = $result["id_utente"];
+
+    $_SESSION["nome"] = $result["nome"];
+
+    $_SESSION["cognome"] = $result["cognome"];
+
+    $_SESSION["email"] = $result["email"];
+
+
+
+    header("Location: /views/dashboard.php");
+
+    exit();
+
+} else {
+
+    die("Credenziali non valide.");
+
+}
