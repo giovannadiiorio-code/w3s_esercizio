@@ -12,17 +12,10 @@ session_start();
         <div class="col-md-6">
 
             <div class="card shadow">
-            <?php
-            if (isset($_SESSION["error_registrazione"])) {
-                echo '<div class="alert alert-danger">' . $_SESSION["error_registrazione"] . '</div>';
-                unset($_SESSION["error_registrazione"]);
-            }
+            <?php //QUA TI PUOI UTILIZZARE UNA FUNZIONE COME pRINTaLLERT
+            $this->PrintAllert('error');
 
-            if(isset($_SESSION["registrazione_corretta"])){
-                echo '<div class="alert alert-success">' . $_SESSION["registrazione_corretta"] . '</div>';
-                unset($_SESSION["registrazione_corretta"]);
-            }
-
+            $this->PrintAllert('success');
             ?>
            
 <style>

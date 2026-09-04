@@ -34,7 +34,7 @@ if (empty($email) || empty($password)) {
 
 
 
-$result = User::authenticate($email, $password);
+$result = User::authenticate($email, $password); //qua ho sempre il result del metodo, modelli, user, metodo anthenticate, 
 
 
 

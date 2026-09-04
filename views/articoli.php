@@ -16,7 +16,7 @@ if (!isset($_SESSION["email"])) {
     header("Location: login.php");
     exit();
 }
-
+//qua dovresti avere un array chiave valore che crei un'interfaccia dti degli articoli e ch ti stampa titolo, descrizione e argomento. quindi ti crei la classe articolo e ti stampi i valori.
 include "conn.php";
 include "header.php";
 

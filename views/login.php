@@ -25,10 +25,7 @@ include "header.php";
 
             <div class="card shadow">
             <?php
-            if (isset($_SESSION["register_success"])) {
-                echo '<div class="alert alert-success">' . $_SESSION["register_success"] . '</div>';
-                unset($_SESSION["register_success"]);
-            }
+           $this->PrintAllert('success');
             ?>
                 <div class="card-header bg-rosa text-white">
 
@@ -40,7 +37,7 @@ include "header.php";
 
                 <div class="card-body">
 
-                    <form action="/controllers/handle_login.php" method="POST"> <!-- vedi qua --!>
+                    <form action="/controllers/handle_login.php" method="POST"> 
 
                         <div class="mb-3">
 

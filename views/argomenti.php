@@ -7,7 +7,7 @@ session_start();
 
 if (!isset($_SESSION["user_id"])) {
     header("Location: /views/login.php");
-    exit();
+    exit(); //se ho l'user Id so che c'è la session
 
 }
 
