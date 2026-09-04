@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../conn.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/controllers/conn.php';
 //questa è una classe!!! così con delle semplici righe tu hai accesso a tutto
 class Articoli { //qua si istanzia la classe
 //integra le info che qui ti manca con i commenti nella classe USER
@@ -11,15 +11,14 @@ class Articoli { //qua si istanzia la classe
     public $link;
     public $privato;
  
-    public function __construct($id_articolo, $titolo, $descrizione, $id_argomento; $id_esecizio; $link, $privato) {
-        $this->id_articolo = $id_articolo;
-        $this->titolo = $titolo;
-        $this->descrizione = $descrizione;
-        $this->id_argomento = $id_argomento;
-        $this->id_esercizio = $id_esercizio;
-        $this->link = $link;
-        $this->privato = $privato;
-//qui le hai dichiarate, così te le puoi utilizzare altrove
+    public function __construct($id_articolo, $titolo, $descrizione, $id_argomento, $id_esercizio, $link, $privato) {
+    $this->id_articolo = $id_articolo;
+    $this->titolo = $titolo;
+    $this->descrizione = $descrizione;
+    $this->id_argomento = $id_argomento;
+    $this->id_esercizio = $id_esercizio;
+    $this->link = $link;
+    $this->privato = $privato;
     }
 
 
@@ -161,18 +160,51 @@ public static function getByArgomento($id_argomento) {
 }
 
 
-public static function getPubblici() {
+     public static function getPubblici($conn) {
+    $risultato = $conn->query("SELECT * FROM articoli WHERE privato = 0");
+    $lista = [];
 
-    global $conn;
+    while ($riga = $risultato->fetch_assoc()) {
+        $lista[] = new Articoli(
+            $riga['id_articolo'],
+            $riga['titolo'],
+            $riga['descrizione'],
+            $riga['id_argomento'],
+            $riga['id_esercizio'],
+            $riga['link'],
+            $riga['privato']
+        );
+    }
 
-    $sql = "SELECT * FROM articoli WHERE privato = 0";
+    return $lista;
 
-    $stmt = $conn->prepare($sql);
+}
+
+    public function getAllArticoliByIdDesc()
+{
+    $sql = "SELECT * FROM articoli ORDER BY id_articolo DESC";
+
+    return $this->conn->query($sql);
+}
+public function getArticoloById($id_articolo)
+{
+    $sql = "SELECT
+                a.id_articolo,
+                a.titolo,
+                a.corpo,
+                ar.nome AS argomento
+            FROM articoli a
+            INNER JOIN argomenti ar
+                ON a.id_argomento = ar.id_argomento
+            WHERE a.id_articolo = ?";
+
+    $stmt = $this->conn->prepare($sql);
+
+    $stmt->bind_param("i", $id_articolo);
 
     $stmt->execute();
 
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    return $stmt->get_result();
 }
-
 
 }

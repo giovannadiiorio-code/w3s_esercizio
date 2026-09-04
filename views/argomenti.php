@@ -1,6 +1,6 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . "/controllers/conn.php";
-
+require_once $_SERVER['DOCUMENT_ROOT'] . '/controllers/conn.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/models/argomenti.php';
 session_start();
 
 // Controllo della sessione
@@ -15,13 +15,9 @@ $title = "Gestione Argomenti";
 
 include __DIR__ . '/header.php';
 
-// Recupera tutti gli argomenti
-$sql = "SELECT * FROM argomenti ORDER BY id_argomento DESC";
-
-$result = $conn->query($sql);
-
+$argomenti = new Argomenti($conn); // o il nome corretto della classe/costruttore
+$result = $argomenti->getAllOrdered();
 ?>
-
 
 <div class="container mt-5">
 

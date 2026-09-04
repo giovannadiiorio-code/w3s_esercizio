@@ -21,23 +21,7 @@ $title = "Visualizza Articolo";
 include "header.php";
 
 // Recupera l'articolo con il relativo argomento
-$sql = "SELECT
-            a.id_articolo,
-            a.titolo,
-            a.corpo,
-            ar.nome AS argomento
-        FROM articoli a
-        INNER JOIN argomenti ar
-            ON a.id_argomento = ar.id_argomento
-        WHERE a.id_articolo = ?";
-
-$stmt = $conn->prepare($sql);
-
-$stmt->bind_param("i", $id);
-
-$stmt->execute();
-
-$result = $stmt->get_result();
+$risultato = $this->getArticoloById($id_articolo);
 
 if ($result->num_rows == 0) {
 

@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '/../conn.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/controllers/conn.php';
+
 //questa è una classe!!! così con delle semplici righe tu hai accesso a tutto
 class Argomenti { //qua si istanzia la classe
 //integra le info che qui ti manca con i commenti nella classe USER
@@ -43,7 +44,7 @@ class Argomenti { //qua si istanzia la classe
         return $stmt->get_result()->fetch_assoc();  //restituisce un array associativo
     }
 
-    public static function create() { 
+    public function create() { 
         global $conn; 
         $sql = "INSERT INTO argomenti (id_argomento, nome, link) 
         VALUES (?, ?, ?)"; 
@@ -57,7 +58,7 @@ class Argomenti { //qua si istanzia la classe
         return $stmt->affected_rows > 0; 
     }
 
-    public static function update() { 
+    public function update() { 
         global $conn; 
         $sql = "UPDATE argomenti SET nome = ?, link = ? WHERE id_argomento = ?"; 
         $stmt = $conn->prepare($sql); 
@@ -70,7 +71,7 @@ class Argomenti { //qua si istanzia la classe
         return $stmt->affected_rows > 0; 
     }
 
-    public static function delete() { 
+    public function delete() { 
         global $conn; $sql = "DELETE FROM argomenti WHERE id_argomento = ?"; 
         $stmt = $conn->prepare($sql); 
         $stmt->bind_param( 
@@ -85,15 +86,22 @@ class Argomenti { //qua si istanzia la classe
         $stmt->execute(); 
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC); 
     }
+    
 
     public static function getById($id_argomento) { 
-        global $conn; $sql = "SELECT * FROM argomenti WHERE id_argomento = ?"; 
-        $stmt = $conn->prepare($sql); 
-        stmt->bind_param( 
-            "i", $id_argomento ); 
+    global $conn; $sql = "SELECT * FROM argomenti WHERE id_argomento = ?"; 
+    $stmt = $conn->prepare($sql); 
+    stmt->bind_param(   // ← manca $ prima di stmt!
+        "i", $id_argomento ); 
     $stmt->execute(); 
-    return $stmt->get_result()->fetch_assoc(); }
-
+    return $stmt->get_result()->fetch_assoc(); 
 }
 
+    public function getAllOrdered() {
+        global $conn;
+        $sql = "SELECT * FROM argomenti ORDER BY id_argomento DESC";
+        return $conn->query($sql);
+    }
+
 //get all, get by id e Create
+}

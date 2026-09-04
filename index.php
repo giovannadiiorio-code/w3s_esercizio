@@ -1,18 +1,20 @@
 <?php
-// questa è la pagina che apri da XAMPP
-// COSA DEVI FARE: accentrare in maniera CMV.
 
-require_once  $_SERVER['DOCUMENT_ROOT'] . '/controllers/conn.php';
-include "views/header.php";
+// Connessione al database
+require_once $_SERVER['DOCUMENT_ROOT'] . '/controllers/conn.php';
+
+// Modello Articoli
+require_once $_SERVER['DOCUMENT_ROOT'] . '/models/Articoli.php';
+
+// Header
+include $_SERVER['DOCUMENT_ROOT'] . '/views/header.php';
+
+// Controlla se l'utente è loggato
 $loggato = isset($_SESSION['utente']);
 
+// Crea l'oggetto Articoli
+$risultato = Articoli::getPubblici($conn);
 
-// Recupera solo gli articoli pubblici
-$sql = "SELECT * FROM articoli 
-        WHERE privato = 0 
-        ORDER BY id_articolo DESC";
-
-$risultato = $conn->query($sql);
 ?>
 
 <main class="pagina">
@@ -29,26 +31,24 @@ $risultato = $conn->query($sql);
         <?php
 
         // Controlla se esiste almeno un articolo
-        if ($risultato->num_rows > 0) {
+        if (count($risultato) > 0) {
 
-            // Scorre tutti gli articoli
-            while ($articolo = $risultato->fetch_assoc()) {
+        // Scorre tutti gli articoli
+        foreach ($risultato as $articolo) {
 
-                echo "
-                <article class='card-articolo'>
-                    <div class='card-contenuto'>
+        echo "
+        <article class='card-articolo'>
+            <div class='card-contenuto'>
+            <h3>{$articolo->titolo}</h3>
 
-                        <h3>{$articolo['titolo']}</h3>
+            <p>" . nl2br($articolo->descrizione) . "</p>
 
-                        <p>" . nl2br($articolo['descrizione']) . "</p>
-
-                        <a href='articolo_pubblico.php?id={$articolo['id_articolo']}' class='btn-leggi'>
-                            Leggi articolo →
-                        </a>
-
+              <a href='articolo_pubblico.php?id={$articolo->id_articolo}' class='btn-leggi'>
+                  Leggi articolo →
+                          </a>
                     </div>
-                </article>";
-            }
+               </article>";
+             }
 
         } else {
 
@@ -85,7 +85,7 @@ body {
     padding: 50px 20px;
     border-radius: 25px;
     margin-bottom: 40px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
 .hero h1 {
@@ -114,13 +114,13 @@ body {
     background: white;
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
     transition: 0.3s;
 }
 
 .card-articolo:hover {
     transform: translateY(-8px);
-    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
 }
 
 .card-contenuto {
@@ -165,6 +165,3 @@ body {
 
 </style>
 
-<?php
-include "views/footer.php";
-?>

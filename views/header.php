@@ -1,14 +1,14 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . "/controllers/conn.php";
-
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Controllo della sessione
 
-if (!isset($_SESSION["user_id"])) {
-    header("Location:/header.php");
-    exit();}
+
+
 
 
 ?>
@@ -224,7 +224,7 @@ if (!isset($_SESSION["user_id"])) {
 
                             <a
                                 class="nav-link"
-                                href="7views/articolo.php">
+                                href="views/articolo.php">
 
                                 Articoli
 
@@ -239,7 +239,7 @@ if (!isset($_SESSION["user_id"])) {
 
                             <a
                                 class="nav-link"
-                                href="7views/articoli.php">
+                                href="/views/articoli.php">
 
                                 Nuovo Articolo
 
@@ -277,7 +277,7 @@ if (!isset($_SESSION["user_id"])) {
                         <!-- LOGIN -->
 
                         <a
-                            href="7views/login.php"
+                            href="/views/login.php"
                             class="btn btn-login">
 
                             Login
@@ -288,7 +288,7 @@ if (!isset($_SESSION["user_id"])) {
                         <!-- REGISTRAZIONE -->
 
                         <a
-                            href="7views/register.php"
+                            href="/views/register.php"
                             class="btn btn-register">
 
                             Registrati

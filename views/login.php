@@ -2,6 +2,7 @@
 
 require_once __DIR__ . "/../controllers/conn.php";
 require_once __DIR__ . "/../models/user.php";
+require_once __DIR__ . "/../models/config.php";
 
 session_start();
 
@@ -25,7 +26,8 @@ include "header.php";
 
             <div class="card shadow">
             <?php
-           $this->PrintAllert('success');
+            $config = new Config();
+            $config->PrintAllert('success');
             ?>
                 <div class="card-header bg-rosa text-white">
 

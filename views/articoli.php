@@ -21,8 +21,7 @@ include "conn.php";
 include "header.php";
 
 // Query per recuperare tutti gli articoli
-$sql = "SELECT * FROM articoli ORDER BY id_articolo DESC";
-$risultato = $conn->query($sql);
+$risultato = $this->getAllArticoliByIdDesc();
 ?>
 
 <main>
